@@ -1,0 +1,7 @@
+streamlit
+fer==22.4.0
+opencv-python
+numpy
+requests
+streamlit-lottie
+gTTS
