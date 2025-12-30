@@ -2,8 +2,11 @@ streamlit
 requests
 streamlit-lottie
 gTTS
-numpy
+numpy==1.23.5
+
+tensorflow==2.12.0
+keras<3
+
+deepface==0.0.91
+
 opencv-python-headless
-deepface
-torch
-tensorflow
