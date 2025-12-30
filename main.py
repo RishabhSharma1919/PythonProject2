@@ -1,8 +1,7 @@
 import streamlit as st
-from fer import FER
+from fer_pytorch import FER
 import cv2
 import numpy as np
-import tempfile
 from streamlit_lottie import st_lottie
 import requests
 from gtts import gTTS
@@ -21,6 +20,7 @@ def load_lottie(url):
         return None
 
 robot = load_lottie("https://assets10.lottiefiles.com/packages/lf20_tll0j4bb.json")
+
 
 # ------------------------------ MODERN CSS --------------------------------
 st.markdown("""
@@ -176,17 +176,17 @@ with right:
     st.subheader("🧠 Emotion Reflection & Healing")
 
     if image:
-        bytes_data = image.getvalue()
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp:
-            tmp.write(bytes_data)
-            img_path = tmp.name
 
-        img = cv2.imread(img_path)
+        # Convert camera image to CV2 format
+        file_bytes = np.asarray(bytearray(image.read()), dtype=np.uint8)
+        img = cv2.imdecode(file_bytes, 1)
 
         detector = FER()
-        emotion, score = detector.top_emotion(img)
+        result = detector.detect_emotions(img)
 
-        if emotion:
+        if result:
+            emotions = result[0]["emotions"]
+            emotion = max(emotions, key=emotions.get)
 
             st.markdown(
                 f"""
@@ -199,19 +199,30 @@ with right:
                 unsafe_allow_html=True
             )
 
-            st.markdown(f"<h2 class='emotion-title'>❤️ Emotion Detected: {emotion.upper()}</h2>", unsafe_allow_html=True)
+            st.markdown(
+                f"<h2 class='emotion-title'>❤️ Emotion Detected: {emotion.upper()}</h2>",
+                unsafe_allow_html=True
+            )
 
-            message = healing_talk.get(emotion,"I am here for you always 🤍")
+            message = healing_talk.get(emotion, "I am here for you always 🤍")
             st.success(f"🤖 Companion says:  {message}")
 
-            tts = gTTS(message)
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as voice_file:
-                tts.save(voice_file.name)
-                st.audio(voice_file.name)
+            # ---------- SAFE VOICE ----------
+            try:
+                tts = gTTS(message, lang="en", tld="com")
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as voice_file:
+                    tts.save(voice_file.name)
+                    st.audio(voice_file.name)
+            except Exception:
+                st.warning("⚠️ Voice could not be generated. Please check internet or try again.")
 
+            # ---------- Spotify ----------
             if emotion in emotion_music:
                 st.markdown("<br>", unsafe_allow_html=True)
-                st.markdown(f"<a class='heal-btn' href='{emotion_music[emotion]}' target='_blank'>🎵 Open Healing Spotify Playlist</a>", unsafe_allow_html=True)
+                st.markdown(
+                    f"<a class='heal-btn' href='{emotion_music[emotion]}' target='_blank'>🎵 Open Healing Spotify Playlist</a>",
+                    unsafe_allow_html=True
+                )
 
         else:
             st.error("No face detected. Try again 🙂")
@@ -220,3 +231,4 @@ with right:
         st.info("Waiting for your photo… ✨")
 
     st.markdown("</div>", unsafe_allow_html=True)
+  st.markdown("</div>", unsafe_allow_html=True)
