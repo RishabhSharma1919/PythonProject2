@@ -1,7 +1,8 @@
 streamlit
-fer==22.4.0
-opencv-python
+fer
+opencv-python-headless
 numpy
 requests
 streamlit-lottie
 gTTS
+mtcnn
