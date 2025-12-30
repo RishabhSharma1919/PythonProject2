@@ -1,5 +1,5 @@
 import streamlit as st
-from fer_pytorch import FER
+from deepface import DeepFace
 import cv2
 import numpy as np
 from streamlit_lottie import st_lottie
@@ -181,12 +181,9 @@ with right:
         file_bytes = np.asarray(bytearray(image.read()), dtype=np.uint8)
         img = cv2.imdecode(file_bytes, 1)
 
-        detector = FER()
-        result = detector.detect_emotions(img)
+     analysis = DeepFace.analyze(img, actions=['emotion'])
+emotion = analysis[0]['dominant_emotion']
 
-        if result:
-            emotions = result[0]["emotions"]
-            emotion = max(emotions, key=emotions.get)
 
             st.markdown(
                 f"""
