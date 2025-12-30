@@ -9,4 +9,4 @@ keras<3
 
 deepface==0.0.91
 
-opencv-python-headless
+opencv-python-headless==4.8.0.74
