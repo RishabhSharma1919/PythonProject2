@@ -8,5 +8,6 @@ tensorflow==2.12.0
 keras<3
 
 deepface==0.0.91
+retinaface==0.0.13
 
-opencv-contrib-python-headless==4.5.5.64
+opencv-python-headless==4.7.0.72
