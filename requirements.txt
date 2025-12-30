@@ -1,11 +1,9 @@
 streamlit
-numpy==1.22.0
 requests
 streamlit-lottie
 gTTS
-
-fer-pytorch==1.1.2
+numpy
+opencv-python-headless
+deepface
 torch
-torchvision
-
-opencv-python-headless==4.5.5.64
+tensorflow
