@@ -21,7 +21,6 @@ def load_lottie(url):
 
 robot = load_lottie("https://assets10.lottiefiles.com/packages/lf20_tll0j4bb.json")
 
-
 # ------------------------------ MODERN CSS --------------------------------
 st.markdown("""
 <style>
@@ -135,7 +134,7 @@ if robot:
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ------------------------------- LAYOUT -----------------------------------
-left, right = st.columns([1.1,2])
+left, right = st.columns([1.1, 2])
 
 with left:
     st.markdown("<div class='card'>", unsafe_allow_html=True)
@@ -181,9 +180,16 @@ with right:
         file_bytes = np.asarray(bytearray(image.read()), dtype=np.uint8)
         img = cv2.imdecode(file_bytes, 1)
 
-     analysis = DeepFace.analyze(img, actions=['emotion'])
-emotion = analysis[0]['dominant_emotion']
+        # DeepFace Analysis
+        try:
+            analysis = DeepFace.analyze(img, actions=['emotion'])
+            emotion = analysis[0]['dominant_emotion']
+        except Exception as e:
+            st.error("Emotion could not be detected. Try again 😊")
+            st.write(e)
+            emotion = None
 
+        if emotion:
 
             st.markdown(
                 f"""
@@ -228,4 +234,3 @@ emotion = analysis[0]['dominant_emotion']
         st.info("Waiting for your photo… ✨")
 
     st.markdown("</div>", unsafe_allow_html=True)
-  st.markdown("</div>", unsafe_allow_html=True)
